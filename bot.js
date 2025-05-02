@@ -70,13 +70,12 @@ bot.on("message", (msg) => {
 
 // Function to shorten the URL and send the result
 async function shortenUrlAndSend(chatId, Url) {
-  // Retrieve the user's MODIJI LINKS API token from the database
   const setapi = getUserToken(chatId);
 
   if (!setapi) {
     bot.sendMessage(
       chatId,
-      "Please provide your Modiji Links API token first. Use the command: /setapi YOUR_MODIJILINKS_API_TOKEN",
+      "Please provide your Modiji Links API token first. Use the command: /setapi YOUR_MODIJILINKS_API_TOKEN"
     );
     return;
   }
@@ -84,20 +83,28 @@ async function shortenUrlAndSend(chatId, Url) {
   try {
     const apiUrl = `https://modiji.site/api?api=${setapi}&url=${Url}`;
 
-    // Make a request to the MODIJI LINKS API to shorten the URL
-    const response = await axios.get(apiUrl);
-    const shortUrl = response.data.shortenedUrl;
+    const https = require('https');
+    const agent = new https.Agent({ family: 4 });
 
-    const responseMessage = `Shortened URL: ${shortUrl}`;
-    bot.sendMessage(chatId, responseMessage);
+    const response = await axios.get(apiUrl, {
+      httpsAgent: agent,
+      timeout: 10000,
+      headers: {
+        'User-Agent': 'TelegramBot/1.0'
+      }
+    });
+
+    const shortUrl = response.data.shortenedUrl;
+    bot.sendMessage(chatId, `Shortened URL: ${shortUrl}`);
   } catch (error) {
-    console.error("Shorten URL Error:", error);
+    console.error("Shorten URL Error:", error.message || error);
     bot.sendMessage(
       chatId,
-      "An error occurred while shortening the URL. Please check your API token and try again.",
+      "An error occurred while shortening the URL. Please check your API token and try again."
     );
   }
 }
+
 
 // Function to validate the URL format
 function isValidUrl(url) {
