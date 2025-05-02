@@ -1,15 +1,15 @@
-const TelegramBot = require('node-telegram-bot-api');
-const axios = require('axios');
-const fs = require('fs');
+const TelegramBot = require("node-telegram-bot-api");
+const axios = require("axios");
+const fs = require("fs");
 
-const express = require('express');
+const express = require("express");
 const app = express();
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
+app.get("/", (req, res) => {
+  res.send("Bot is running! Please visit @modijisitebot on Telegram.");
 });
 
-const port = 8000;
+const port = 3000;
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
@@ -24,63 +24,78 @@ const bot = new TelegramBot(botToken, { polling: true });
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
   const username = msg.from.username;
-  const welcomeMessage = `Hello, ${username}!\n\n`
-    + 'Welcome to the URL Shortener Bot!\n'
-    + 'You can use this bot to shorten URLs using the mybios.eu.org service.\n\n'
-    + 'To shorten a URL, just type or paste the URL directly in the chat, and the bot will provide you with the shortened URL.\n\n'
-    + 'If you haven\'t set your MyBios API token yet, use the command:\n/api YOUR_MYBIOS_API_TOKEN\n\n'
-    + 'Now, go ahead and try it out!';
+  const welcomeMessage =
+    `😇 Hello, ${username}!\n\n` +
+    "Welcome to the MODIJI LINKS URL Shortener Bot!\n" +
+    "You can use this bot to shorten URLs using the Modiji.site api service.\n\n" +
+    "To shorten a URL, just type or paste the URL directly in the chat, and the bot will provide you with the shortened URL.\n\n" +
+    "If you haven't set your Modiji Links API token yet, use the command:\n/setapi YOUR_MODIJILINKS_API_TOKEN\n\n" +
+    "How To Use Me 👇👇 \n\n" +
+    "✅1. Got To https://modiji.site & Complete Your Registration.\n\n" +
+    "✅2. Then Copy Your API Key from here https://modiji.site/member/tools/api Copy Your API Only. \n\n" +
+    "✅3. Then add your API using command /setapi \n\n" +
+    "Example: /setapi c49399f821fc020161bc2a31475ec59f35ae5b4\n\n" +
+    "⚠️ You must have to send link with https:// or http://\n\n" +
+    "Made with ❤️ By: @DracWound";
+  +"**Now, go ahead and try it out!**";
 
   bot.sendMessage(chatId, welcomeMessage);
 });
 
-
-// Command: /api
-bot.onText(/\/api (.+)/, (msg, match) => {
+// Command: /setapi
+bot.onText(/\/setapi (.+)/, (msg, match) => {
   const chatId = msg.chat.id;
   const userToken = match[1].trim(); // Get the API token provided by the user
 
-  // Save the user's MyBios API token to the database
+  // Save the user's MODIJI LINKS API token to the database
   saveUserToken(chatId, userToken);
 
-  const response = `MyBios API token set successfully. Your token: ${userToken}`;
+  const response = `MODIJI LINKS API token set successfully. Your token: ${userToken}`;
   bot.sendMessage(chatId, response);
 });
 
 // Listen for any message (not just commands)
-bot.on('message', (msg) => {
+bot.on("message", (msg) => {
   const chatId = msg.chat.id;
   const messageText = msg.text;
 
   // If the message starts with "http://" or "https://", assume it's a URL and try to shorten it
-  if (messageText && (messageText.startsWith('http://') || messageText.startsWith('https://'))) {
+  if (
+    messageText &&
+    (messageText.startsWith("http://") || messageText.startsWith("https://"))
+  ) {
     shortenUrlAndSend(chatId, messageText);
   }
 });
 
 // Function to shorten the URL and send the result
 async function shortenUrlAndSend(chatId, Url) {
-  // Retrieve the user's MyBios API token from the database
-  const arklinksToken = getUserToken(chatId);
+  // Retrieve the user's MODIJI LINKS API token from the database
+  const setapi = getUserToken(chatId);
 
-  if (!arklinksToken) {
-    bot.sendMessage(chatId, 'Please provide your MyBios API token first. Use the command: /api YOUR_MYBIOS_API_TOKEN');
+  if (!setapi) {
+    bot.sendMessage(
+      chatId,
+      "Please provide your Modiji Links API token first. Use the command: /setapi YOUR_MODIJILINKS_API_TOKEN",
+    );
     return;
   }
 
   try {
-    const apiUrl = `https://mybios.eu.org/api?api=${arklinksToken}&url=${Url}`;
+    const apiUrl = `https://modiji.site/api?api=${setapi}&url=${Url}`;
 
-    // Make a request to the MyBios API to shorten the URL
+    // Make a request to the MODIJI LINKS API to shorten the URL
     const response = await axios.get(apiUrl);
     const shortUrl = response.data.shortenedUrl;
-
 
     const responseMessage = `Shortened URL: ${shortUrl}`;
     bot.sendMessage(chatId, responseMessage);
   } catch (error) {
-    console.error('Shorten URL Error:', error);
-    bot.sendMessage(chatId, 'An error occurred while shortening the URL. Please check your API token and try again.');
+    console.error("Shorten URL Error:", error);
+    bot.sendMessage(
+      chatId,
+      "An error occurred while shortening the URL. Please check your API token and try again.",
+    );
   }
 }
 
@@ -90,14 +105,14 @@ function isValidUrl(url) {
   return urlPattern.test(url);
 }
 
-// Function to save user's MyBios API token to the database (Replit JSON database)
+// Function to save user's MODIJI LINKS API token to the database (Replit JSON database)
 function saveUserToken(chatId, token) {
   const dbData = getDatabaseData();
   dbData[chatId] = token;
-  fs.writeFileSync('database.json', JSON.stringify(dbData, null, 2));
+  fs.writeFileSync("database.json", JSON.stringify(dbData, null, 2));
 }
 
-// Function to retrieve user's MyBios API token from the database
+// Function to retrieve user's MODIJI LINKS API token from the database
 function getUserToken(chatId) {
   const dbData = getDatabaseData();
   return dbData[chatId];
@@ -106,7 +121,7 @@ function getUserToken(chatId) {
 // Function to read the database file and parse the JSON data
 function getDatabaseData() {
   try {
-    return JSON.parse(fs.readFileSync('database.json', 'utf8'));
+    return JSON.parse(fs.readFileSync("database.json", "utf8"));
   } catch (error) {
     // Return an empty object if the file doesn't exist or couldn't be parsed
     return {};
