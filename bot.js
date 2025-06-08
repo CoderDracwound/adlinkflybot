@@ -6,7 +6,7 @@ const express = require("express");
 const app = express();
 
 app.get("/", (req, res) => {
-  res.send("Bot is running! Please visit @modijisitebot on Telegram.");
+  res.send("Bot is running! Please visit @POTTERsitebot on Telegram.");
 });
 
 const port = 3000;
@@ -26,13 +26,13 @@ bot.onText(/\/start/, (msg) => {
   const username = msg.from.username;
   const welcomeMessage =
     `😇 Hello, ${username}!\n\n` +
-    "Welcome to the MODIJI LINKS URL Shortener Bot!\n" +
-    "You can use this bot to shorten URLs using the Modiji.site api service.\n\n" +
+    "Welcome to the POTTER LINKS URL Shortener Bot!\n" +
+    "You can use this bot to shorten URLs using the potterlinks.com api service.\n\n" +
     "To shorten a URL, just type or paste the URL directly in the chat, and the bot will provide you with the shortened URL.\n\n" +
-    "If you haven't set your Modiji Links API token yet, use the command:\n/setapi YOUR_MODIJILINKS_API_TOKEN\n\n" +
+    "If you haven't set your Potter Links API token yet, use the command:\n/setapi YOUR_POTTERLINKS_API_TOKEN\n\n" +
     "How To Use Me 👇👇 \n\n" +
-    "✅1. Got To https://modiji.site & Complete Your Registration.\n\n" +
-    "✅2. Then Copy Your API Key from here https://modiji.site/member/tools/api Copy Your API Only. \n\n" +
+    "✅1. Got To https://potterlinks.com & Complete Your Registration.\n\n" +
+    "✅2. Then Copy Your API Key from here https://potterlinks.com/member/tools/api Copy Your API Only. \n\n" +
     "✅3. Then add your API using command /setapi \n\n" +
     "Example: /setapi c49399f821fc020161bc2a31475ec59f35ae5b4\n\n" +
     "⚠️ You must have to send link with https:// or http://\n\n" +
@@ -47,10 +47,10 @@ bot.onText(/\/setapi (.+)/, (msg, match) => {
   const chatId = msg.chat.id;
   const userToken = match[1].trim(); // Get the API token provided by the user
 
-  // Save the user's MODIJI LINKS API token to the database
+  // Save the user's POTTER LINKS API token to the database
   saveUserToken(chatId, userToken);
 
-  const response = `MODIJI LINKS API token set successfully. Your token: ${userToken}`;
+  const response = `POTTER LINKS API token set successfully. Your token: ${userToken}`;
   bot.sendMessage(chatId, response);
 });
 
@@ -75,13 +75,13 @@ async function shortenUrlAndSend(chatId, Url) {
   if (!setapi) {
     bot.sendMessage(
       chatId,
-      "Please provide your Modiji Links API token first. Use the command: /setapi YOUR_MODIJILINKS_API_TOKEN"
+      "Please provide your POTTER Links API token first. Use the command: /setapi YOUR_POTTERLINKS_API_TOKEN"
     );
     return;
   }
 
   try {
-    const apiUrl = `https://modiji.site/api?api=${setapi}&url=${Url}`;
+    const apiUrl = `https://potterlinks.com/api?api=${setapi}&url=${Url}`;
 
     const https = require('https');
     const agent = new https.Agent({ family: 4 });
@@ -112,14 +112,14 @@ function isValidUrl(url) {
   return urlPattern.test(url);
 }
 
-// Function to save user's MODIJI LINKS API token to the database (Replit JSON database)
+// Function to save user's POTTER LINKS API token to the database (Replit JSON database)
 function saveUserToken(chatId, token) {
   const dbData = getDatabaseData();
   dbData[chatId] = token;
   fs.writeFileSync("database.json", JSON.stringify(dbData, null, 2));
 }
 
-// Function to retrieve user's MODIJI LINKS API token from the database
+// Function to retrieve user's POTTER LINKS API token from the database
 function getUserToken(chatId) {
   const dbData = getDatabaseData();
   return dbData[chatId];
