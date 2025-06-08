@@ -6,7 +6,7 @@ const express = require("express");
 const app = express();
 
 app.get("/", (req, res) => {
-  res.send("Bot is running! Please visit @POTTERsitebot on Telegram.");
+  res.send("Bot is running! Please visit @potterlinksbot on Telegram.");
 });
 
 const port = 3000;
